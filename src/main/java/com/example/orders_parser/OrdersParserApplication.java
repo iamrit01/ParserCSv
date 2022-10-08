@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 public class OrdersParserApplication {
 
-	public static void main(String[] argsu) throws IOException {
-		String[] args = {"orders1.csv","orders2.json"};
+	public static void main(String[] args) throws IOException {
 		for(int i=0; i< args.length; i++){
 			if(args[i].contains(".csv")){
 				try (BufferedReader in = new BufferedReader(new FileReader("/Users/bikry/Desktop/"+args[i]))) {
