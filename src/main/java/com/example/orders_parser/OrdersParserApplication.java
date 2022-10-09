@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.*;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -32,10 +33,11 @@ public class OrdersParserApplication {
 		new Thread(){
 			public void run(){
 				try (BufferedReader in = new BufferedReader(new FileReader("/Users/bikry/Desktop/"+file))) {
-
+					Pattern p =Pattern.compile("[a-zA-Z]");
 					List<Orders> orders = in.lines().skip(1).map(line -> {
 						String[] x = line.split(" ",4);
-						return new Orders(Integer.parseInt(x[0].equals("")?"-1":x[0]), Integer.parseInt(x[1].equals("")?"-1":x[1]), x[2], x[3].replace("\"","").trim());
+						return new Orders(Integer.parseInt(x[0].equals("")?"-1":x[0]),
+								Integer.parseInt(x[1].equals("")?"-1":(p.matcher(x[1]).find()==true?"-1":x[1])), x[2], x[3].replace("\"","").trim());
 					}).collect(Collectors.toList());
 
 					int line = 1;
@@ -69,10 +71,11 @@ public class OrdersParserApplication {
 					JSONArray orderList = (JSONArray) obj;
 					int line = 1;
 					for(Object order: orderList) {
-						order = (JSONObject) order;
+
 						((JSONObject) order).put("filename", file);
 						((JSONObject) order).put("line", line);
 						((JSONObject) order).put("result", "OK");
+
 						System.out.println(order);
 						line++;
 					}
